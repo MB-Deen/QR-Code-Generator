@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        /* General reset and styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #653b74, #000000);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #333;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .qr-code {
+            margin-top: 20px;
+        }
+
+        .qr-code img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            border-color: 10px dotted grey;
+        }
+
+        .qr-code h3 {
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 18px;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #acaaaa;
+            font-size: 14px;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+  
+
+
+        footer a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+        .mt-2{
+            margin-top: 5px;
+        }
+        .mt-5{
+            margin-top: 12px;
+        }
+        .btn{   
+            outline: 0;
+            grid-gap: 8px;
+            align-items: center;
+            background: 0 0;
+            border: 1px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-flex;
+            flex-shrink: 0;
+            font-size: 16px;
+            gap: 8px;
+            justify-content: center;
+            line-height: 1.5;
+            overflow: hidden;
+            padding: 10px 14px;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            transition: all .14s ease-out;
+            white-space: nowrap;
+        }
+        .btn:focus-visible{
+            outline-offset: 1px;
+        }
+        .btn:hover {
+            box-shadow: 4px 4px 0 #000;
+            transform: translate(-4px,-4px);
+        }
+        .truncate-text {
+            display: inline-block;
+            max-width: 20ch; /* Maximum 10 characters wide */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap; /* Prevent wrapping */
+            vertical-align: top;
+          }
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            body{
+                padding:8px;
+            }
+            .card {
+                padding: 20px;
+                width: 90%;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            input[type="text"], button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .qr-code h3 {
+                font-size: 16px;
+            }
+
+            footer {
+                font-size: 12px;
+            }
+
+        }
+
+    .color-picker-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: auto;
+        margin: auto auto;
+        font-family: Arial, sans-serif;
+      }
+  
+      /* Flex row for label and input */
+      .color-picker-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+  
+      /* Labels styling */
+      .color-picker-label {
+        font-size: 1rem;
+        font-weight: bold;
+        flex: 1; /* Make labels flexible */
+      }
+  
+      /* Inputs styling */
+      .color-picker {
+        appearance: none;
+        width: 50px;
+        height: 30px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: border-color 0.3s;
+      }
+  
+      /* Focus effect */
+      .color-picker:focus {
+        outline: none;
+        border-color: #0078d4;
+      }
+  
+      /* Modern container styling */
+      .color-picker-container {
+        background: #f9f9f9;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>QR Code Generator <br>NiteLitefury&crarr;</h1>
+        <form method="get" action="/generate">
+            <input type="text" id="data" name="data" placeholder="Enter your website, text, passwords, etc." required>
+            <div class="color-picker-container">
+                <div class="color-picker-row">
+                  <label for="fill_color" class="color-picker-label">Fill Color:</label>
+                  <input type="color" id="fill_color" name="fill_color" class="color-picker" value="#000000" required>
+                </div>
+                <div class="color-picker-row">
+                  <label for="back_color" class="color-picker-label">Background Color:</label>
+                  <input type="color" id="back_color" name="back_color" class="color-picker" value="#ffffff" required>
+                </div>
+              </div>
+            <button type="submit" class="btn mt-5">Generate QR Code</button>
+        </form>
+        {% if qr_code %}
+        <div class="qr-code">
+            <h3>Your QR Code For: <span class="truncate-text">{{data or "No Data to generate"}}</span></h3>
+            <img src="data:image/png;base64,{{ qr_code }}" id="generatedImage" alt="Generated QR Code">
+            <button id="downloadBtn" class="mt-2 btn">Download QR</button><br>
+            <a href="/" class="mt-2 btn">Clear</a>
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        document.getElementById("downloadBtn").addEventListener("click", function () {
+            // Get the image element
+            const imgElement = document.getElementById("generatedImage");
+          
+            // Create an anchor element
+            const link = document.createElement("a");
+          
+            // Set the href to the image source
+            link.href = imgElement.src;
+          
+            // Set the download attribute to specify the file name
+            link.download = "QR-Image-BY-NiteLiteProject.png";
+          
+            // Trigger the download
+            link.click();
+          });
+    </script>
+    <footer>
+        Developed by <a href="https://github.com/MB-Deen?tab=repositories" target="_blank">NiteLitefury</a> &mdash; A passionate developer and hobbyist.
+    </footer>
+</body>
+</html>
